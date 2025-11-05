@@ -1,0 +1,40 @@
+src/
+  app/
+    store.ts                # Config de Redux Toolkit + middlewares
+    router.tsx              # React Router
+    providers/              # Providers globales (Theme, SocketProvider)
+  shared/
+    types/                  # DTOs, ViewModels, contratos WS
+    utils/                  # helpers puros (formatters, date, units)
+    constants/              # rutas, topics, feature flags
+    hooks/                  # hooks genéricos
+    config/                 # env, endpoints, versionado
+  services/
+    api/                    # RTK Query slices (REST)
+      baseQuery.ts
+      authApi.ts
+      devicesApi.ts
+      telemetryApi.ts
+    ws/
+      SocketManager.ts      # gestión WS (reconexión, backoff, auth)
+      channels/             # handlers por canal/evento
+        deviceChannel.ts
+        telemetryChannel.ts
+    selectors/              # selectores memorizados
+  features/
+    auth/                   # login, refresh, guardias
+    devices/                # grid/lista, detalle
+    telemetry/              # charts, streams
+    stations/               # si aplican estaciones/sucursales
+    dashboards/             # vistas agregadas
+  ui/                       # componentes presentacionales
+    components/             # botones, tablas, cards, modales
+    layouts/                # shell, sidebar, topbar
+    charts/                 # wrappers Recharts (Line, Area, Bar)
+  pages/
+    DashboardPage/
+    DevicesPage/
+    DeviceDetailPage/
+    LoginPage/
+  assets/
+  index.tsx
