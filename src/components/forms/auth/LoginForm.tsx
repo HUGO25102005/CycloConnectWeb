@@ -1,6 +1,16 @@
-import React from "react";
-import { Form, Input, Button, Card, Typography, Divider, Space } from "antd";
+import React, { useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Card,
+  Typography,
+  Divider,
+  Space,
+  message,
+} from "antd";
 import { MailOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../hooks/useAuth";
 
 const { Title, Text } = Typography;
 
@@ -11,15 +21,29 @@ interface LoginFormValues {
 
 const LoginForm: React.FC = () => {
   const [form] = Form.useForm();
+  const { login, status, error, clearAuthError } = useAuth();
+
+  // Mostrar errores usando message de Ant Design
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  // Limpiar errores cuando el usuario cambie los campos
+  const handleFieldsChange = () => {
+    if (error) {
+      clearAuthError();
+    }
+  };
 
   const onFinish = (values: LoginFormValues) => {
-    console.log("Login values:", values);
-    // Aquí iría la lógica de autenticación
+    login(values.email.trim(), values.password);
   };
 
   const onGoogleLogin = () => {
-    console.log("Google login");
-    // Aquí iría la lógica de autenticación con Google
+    message.info("Login con Google - Próximamente");
+    // Aquí iría la lógica de autenticación con Google en el futuro
   };
 
   return (
@@ -42,6 +66,7 @@ const LoginForm: React.FC = () => {
           form={form}
           name="login"
           onFinish={onFinish}
+          onFieldsChange={handleFieldsChange}
           layout="vertical"
           requiredMark={false}
           size="large"
@@ -81,9 +106,11 @@ const LoginForm: React.FC = () => {
               type="primary"
               htmlType="submit"
               block
+              loading={status === "loading"}
+              disabled={status === "loading"}
               style={{ height: 44 }}
             >
-              Iniciar Sesión
+              {status === "loading" ? "Iniciando sesión..." : "Iniciar Sesión"}
             </Button>
           </Form.Item>
         </Form>

@@ -1,11 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "../layouts/Dashboadlayout";
+import WelcomePage from "../../pages/app/WelcomePage";
 
 const AppFeature = () => {
   return (
     <Routes>
       <Route element={<DashboardLayout />}>
-        {/* <Route path="/" element={<WelcomePage />} /> */}
+        <Route path="/" element={<WelcomePage />} />
 
         {/* Panel principal */}
         {/* <Route path="/panel" element={<DashboardPage />} /> */}

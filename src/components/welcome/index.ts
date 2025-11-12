@@ -1,0 +1,1 @@
+export { default as WelcomePerson } from './WelcomePerson';

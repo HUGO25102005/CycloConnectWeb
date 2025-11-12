@@ -1,39 +1,39 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { Spin } from "antd";
-// import { useAuth } from "../../features/auth/hooks";
+import { useAuth } from "../../hooks/useAuth";
 
 interface PrivateRouteProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-    
-    // const { isAuthenticated, loading, isValidating } = useAuth();
+  const { user, status } = useAuth();
+  const isLoading = status === "loading" || status === "initializing";
 
-    // Mostrar loading mientras se valida la sesión
-    // if (loading || isValidating) {
-    //     return (
-    //         <div
-    //             style={{
-    //                 display: "flex",
-    //                 justifyContent: "center",
-    //                 alignItems: "center",
-    //                 height: "100vh",
-    //             }}
-    //         >
-    //             <Spin size="large" />
-    //         </div>
-    //     );
-    // }
+  // Mostrar loading mientras se valida la sesión inicial o durante operaciones de autenticación
+  if (isLoading && user === null) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Spin size="large" />
+      </div>
+    );
+  }
 
-    // Solo redirigir si está definitivamente NO autenticado
-    // if (isAuthenticated === false) {
-    //     return <Navigate to="/auth" replace />;
-    // }
+  // Si no está autenticado, redirigir al login
+  if (!user) {
+    return <Navigate to="/auth/login" replace />;
+  }
 
-    // Si está autenticado, mostrar el contenido
-    return <>{children}</>;
+  // Si está autenticado, mostrar el contenido
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

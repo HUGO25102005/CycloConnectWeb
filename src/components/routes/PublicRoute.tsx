@@ -1,37 +1,43 @@
 import React from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { Navigate } from "react-router-dom";
+import { Spin } from "antd";
 // import { useAuth } from "../../features/auth/hooks";
 
 interface PublicRouteProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-    
-    // const { isAuthenticated, loading, isValidating } = useAuth();
+  const { user, status } = useAuth();
 
-    // Si está cargando o validando, mostrar loading
-    // if (loading || isValidating) {
-    //     return (
-    //         <div
-    //             style={{
-    //                 display: "flex",
-    //                 justifyContent: "center",
-    //                 alignItems: "center",
-    //                 height: "100vh",
-    //             }}
-    //         >
-    //             <Spin size="large" spinning={loading || isValidating} />
-    //         </div>
-    //     );
-    // }
+  const isLoading = status === "loading" || status === "initializing";
 
-    // Solo redirigir si está definitivamente autenticado
-    // if (isAuthenticated === true) {
-    //     return <Navigate to="/app" replace />;
-    // }
+  if (isLoading && user === null) {
+    return <Navigate to="/auth" replace />;
+  }
 
-    // Si no está autenticado o la validación falló, mostrar contenido público
-    return <>{children}</>;
+  // Si está cargando o validando, mostrar loading
+  if (isLoading && user === null) {
+      return (
+          <div
+              style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100vh",
+              }}
+          >
+              <Spin size="large" spinning={isLoading} />
+          </div>
+      );
+  }
+
+  // Solo redirigir si está definitivamente autenticado
+  if (user?.uid) {
+      return <Navigate to="/app" replace />;
+  }
+  return <>{children}</>;
 };
 
 export default PublicRoute;
