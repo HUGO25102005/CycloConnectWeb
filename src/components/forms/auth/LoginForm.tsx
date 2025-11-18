@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { MailOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../hooks/useAuth";
+import logo from "../../../assets/logo.png";
 
 const { Title, Text } = Typography;
 
@@ -56,6 +57,16 @@ const LoginForm: React.FC = () => {
     >
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
         <div style={{ textAlign: "center" }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              maxWidth: "150px",
+              height: "auto",
+              marginBottom: 24,
+              borderRadius: 75,
+            }}
+          />
           <Title level={2} style={{ marginBottom: 8 }}>
             Iniciar Sesión
           </Title>

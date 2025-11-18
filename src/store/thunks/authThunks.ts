@@ -1,10 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { auth } from "../services/firebase";
+import { auth } from "../../services/firebase";
 import {
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
     signOut,
     type User,
+    onAuthStateChanged,
 } from "firebase/auth";
 
 export type SerializedUser = {
@@ -81,3 +82,29 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
     }
 );
 
+export const validateSessionThunk = createAsyncThunk(
+    "auth/validateSession",
+    async (_, { rejectWithValue, fulfillWithValue }) => {
+
+        try {
+            const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+
+                unsubscribe();
+
+                if (!firebaseUser) {
+                    fulfillWithValue(null);
+                    return;
+                }
+                fulfillWithValue({
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    displayName: firebaseUser.displayName,
+                    photoURL: firebaseUser.photoURL,
+                    emailVerified: firebaseUser.emailVerified,
+                } as SerializedUser );
+            });
+        } catch (err: any) {
+            return rejectWithValue(err.message);
+        }
+    }
+);

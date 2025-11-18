@@ -2,7 +2,7 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { type AppDispatch } from "./index";
 import { setUser } from "./authSlice";
-import { type SerializedUser } from "./authThunks";
+import { type SerializedUser } from "./thunks";
 
 const serializeUser = (u: User): SerializedUser => ({
     uid: u.uid,

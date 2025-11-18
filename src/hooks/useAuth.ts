@@ -1,15 +1,15 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../store/index";
-import { loginWithEmail, requestPasswordReset, logout } from "../store/authThunks";
+import { loginWithEmail, requestPasswordReset, logout } from "../store/thunks";
 import { clearError } from "../store/authSlice";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const { user, status, error } = useSelector((state: RootState) => state.auth);
-
+    const { user, status, error, loading: loadingAuth } = useSelector((state: RootState) => state.auth);
+    const [loading, setLoading] = useState(false);
     const login = useCallback(
         (email: string, password: string) => {
             dispatch(loginWithEmail({ email, password }));
@@ -37,7 +37,13 @@ export function useAuth() {
     //         navigate("/app");
     //     }
     // }, [status, user, dispatch]);
-
-    return { user, status, error, login, resetPassword, signOut, clearAuthError };
+    useEffect(() => {
+        if (status === "loading" || loadingAuth === true) {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    }, [loadingAuth, status]);
+    return { user, status, error, loading, login, resetPassword, signOut, clearAuthError };
 }
 

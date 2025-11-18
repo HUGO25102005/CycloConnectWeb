@@ -6,6 +6,7 @@ const AuthFeature: React.FC = () => {
 
   return (
     <Routes>
+        
       <Route path="/" element={<Navigate to="login" replace />} />
       <Route path="login" element={<LoginPage />} />
       {/* <Route path="register" element={<RegisterPage />} /> */}

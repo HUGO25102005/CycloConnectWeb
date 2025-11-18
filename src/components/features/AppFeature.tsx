@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "../layouts/Dashboadlayout";
 import WelcomePage from "../../pages/app/WelcomePage";
+import DashboardPage from "../../pages/app/DashboardPage";
 
 const AppFeature = () => {
   return (
@@ -9,7 +10,7 @@ const AppFeature = () => {
         <Route path="/" element={<WelcomePage />} />
 
         {/* Panel principal */}
-        {/* <Route path="/panel" element={<DashboardPage />} /> */}
+        <Route path="/panel" element={<DashboardPage />} />
 
         {/* Gestión de empresa */}
         {/* <Route path="/company" element={<InfoPage />} />

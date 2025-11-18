@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { appStarted } from "./appSlice";
 import authReducer from "./authSlice";
+import { validateSessionThunk } from "./thunks";
 
 const store = configureStore({
     reducer: {
@@ -20,7 +21,7 @@ const store = configureStore({
 });
 
 store.dispatch(appStarted());
-
+store.dispatch(validateSessionThunk());
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

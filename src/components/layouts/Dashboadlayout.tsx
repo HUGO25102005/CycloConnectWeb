@@ -4,6 +4,8 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getDefaultDashboardRoutes } from "./RoutesDashboard";
 import { ProLayout, type ProSettings } from "@ant-design/pro-components";
 import { Tooltip, Typography } from "antd";
+import logo from "../../assets/logo.png";
+import AvatarButtons from "./AvatarButtons";
 
 // Buscar icono por path (FUERA del componente)
 const findRouteIcon = (path: string, routes: any[]): React.ReactNode => {
@@ -62,7 +64,7 @@ const DashboardLayout: React.FC = () => {
             style={{ marginTop: 2.5 }}
           />
         ),
-        itemRender: (route: any, params, routes: any[], paths) => {
+        itemRender: (route: any, _params, routes: any[], _paths) => {
           const isFirst = routes.indexOf(route) === 0;
           const isLast = routes.indexOf(route) === routes.length - 1;
           const routePath = route.linkPath || route.path; // Usar linkPath en lugar de path (ProLayout usa linkPath internamente)
@@ -113,8 +115,8 @@ const DashboardLayout: React.FC = () => {
         return routers;
       }}
       // Logo y título
-      //   logo={configApp.logo}
-      //   title={configApp.name}
+      logo={logo}
+      title="IoT Dashboard"
       // Personalizado del header
       headerTitleRender={(logo, title) => (
         <Space onClick={() => navigate("/")}>
@@ -135,7 +137,7 @@ const DashboardLayout: React.FC = () => {
         </Space>
       )}
       // Menu items con navegación
-      menuItemRender={(item, dom, props) => {
+      menuItemRender={(item, _dom, props) => {
         const isActive = pathname === item.path;
         const isCollapsed = props?.collapsed;
 
@@ -183,7 +185,7 @@ const DashboardLayout: React.FC = () => {
         // />,
       ]}
       // Avatar y menú de usuario
-      //   avatarProps={{ render: () => <AvatarButtons mode={mode} /> }}
+      avatarProps={{ render: () => <AvatarButtons /> }}
       // Footer del menú
       menuFooterRender={(props) => {
         if (props?.collapsed) return undefined;

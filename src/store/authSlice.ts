@@ -1,12 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { loginWithEmail, logout, requestPasswordReset } from "./authThunks";
-import { type SerializedUser } from "./authThunks";
+import { loginWithEmail, logout, requestPasswordReset, validateSessionThunk } from "./thunks";
+import { type SerializedUser } from "./thunks";
 
 export type AuthState = {
     user: SerializedUser | null;
     status: "idle" | "loading" | "succeeded" | "failed" | "initializing";
     error: string | null;
     isInitialized: boolean;
+    loading: boolean;
 };
 
 const initialState: AuthState = {
@@ -14,6 +15,7 @@ const initialState: AuthState = {
     status: "initializing",
     error: null,
     isInitialized: false,
+    loading: true,
 };
 
 const authSlice = createSlice({
@@ -68,7 +70,25 @@ const authSlice = createSlice({
             .addCase(logout.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload ?? "Error al cerrar sesión.";
-            });
+            })
+            .addCase(validateSessionThunk.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(validateSessionThunk.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.user = action.payload ?? null;
+                state.error = null;
+                state.loading = false;
+            })
+            .addCase(validateSessionThunk.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload as string ?? "Error al validar sesión.";
+                state.user = null;
+                state.loading = false;
+            })
+
     },
 });
 
