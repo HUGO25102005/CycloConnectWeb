@@ -1,15 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../store/index";
 import { loginWithEmail, requestPasswordReset, logout } from "../store/thunks";
 import { clearError } from "../store/authSlice";
-// import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
-    // const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const { user, status, error, loading: loadingAuth } = useSelector((state: RootState) => state.auth);
-    const [loading, setLoading] = useState(false);
+    const { user, status, error, loading, isInitialized } = useSelector((state: RootState) => state.auth);
+
     const login = useCallback(
         (email: string, password: string) => {
             dispatch(loginWithEmail({ email, password }));
@@ -32,18 +30,6 @@ export function useAuth() {
         dispatch(clearError());
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     if (status === "succeeded" || user?.uid) {
-    //         navigate("/app");
-    //     }
-    // }, [status, user, dispatch]);
-    useEffect(() => {
-        if (status === "loading" || loadingAuth === true) {
-            setLoading(true);
-        } else {
-            setLoading(false);
-        }
-    }, [loadingAuth, status]);
-    return { user, status, error, loading, login, resetPassword, signOut, clearAuthError };
+    return { user, status, error, loading, isInitialized, login, resetPassword, signOut, clearAuthError };
 }
 

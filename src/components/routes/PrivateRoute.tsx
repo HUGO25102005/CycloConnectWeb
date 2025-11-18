@@ -8,11 +8,10 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const { user, status } = useAuth();
-  const isLoading = status === "loading" || status === "initializing";
+  const { user, isInitialized, loading } = useAuth();
 
-  // Mostrar loading mientras se valida la sesión inicial o durante operaciones de autenticación
-  if (isLoading && user === null) {
+  // Mostrar loading solo durante la inicialización
+  if (!isInitialized || loading) {
     return (
       <div
         style={{
@@ -27,7 +26,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     );
   }
 
-  // Si no está autenticado, redirigir al login
+  // Si no está autenticado después de la inicialización, redirigir al login
   if (!user) {
     return <Navigate to="/auth/login" replace />;
   }

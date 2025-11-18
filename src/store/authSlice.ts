@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { loginWithEmail, logout, requestPasswordReset, validateSessionThunk } from "./thunks";
+import { loginWithEmail, logout, requestPasswordReset } from "./thunks";
 import { type SerializedUser } from "./thunks";
 
 export type AuthState = {
@@ -27,9 +27,15 @@ const authSlice = createSlice({
             state.error = null;
             state.status = "idle";
             state.isInitialized = true;
+            state.loading = false;
         },
         clearError(state) {
             state.error = null;
+        },
+        setInitializing(state) {
+            state.status = "initializing";
+            state.loading = true;
+            state.isInitialized = false;
         },
     },
     extraReducers(builder) {
@@ -71,27 +77,10 @@ const authSlice = createSlice({
                 state.status = "failed";
                 state.error = action.payload ?? "Error al cerrar sesión.";
             })
-            .addCase(validateSessionThunk.pending, (state) => {
-                state.status = "loading";
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(validateSessionThunk.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.user = action.payload ?? null;
-                state.error = null;
-                state.loading = false;
-            })
-            .addCase(validateSessionThunk.rejected, (state, action) => {
-                state.status = "failed";
-                state.error = action.payload as string ?? "Error al validar sesión.";
-                state.user = null;
-                state.loading = false;
-            })
 
     },
 });
 
-export const { setUser, clearError } = authSlice.actions;
+export const { setUser, clearError, setInitializing } = authSlice.actions;
 export default authSlice.reducer;
 

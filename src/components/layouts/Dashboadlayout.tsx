@@ -115,27 +115,47 @@ const DashboardLayout: React.FC = () => {
         return routers;
       }}
       // Logo y título
-      logo={logo}
-      title="IoT Dashboard"
+      logo={
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ 
+            height: "32px", 
+            width: "auto", 
+            objectFit: "contain",
+            cursor: "pointer",
+            borderRadius: 75,
+          }}
+        />
+      }
+      title="CycloConnect"
       // Personalizado del header
-      headerTitleRender={(logo, title) => (
-        <Space onClick={() => navigate("/")}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0px",
-              cursor: "pointer",
-              padding: "8px 12px",
-            }}
-          >
-            {logo}{" "}
-            <Text strong style={{ margin: 0 }}>
-              {title}
-            </Text>
-          </div>
-        </Space>
-      )}
+      //   headerTitleRender={(_, title) => (
+      //     <Space onClick={() => navigate("/")}>
+      //       <div
+      //         style={{
+      //           display: "flex",
+      //           alignItems: "center",
+      //           gap: "8px",
+      //           cursor: "pointer",
+      //           padding: "8px 12px",
+      //         }}
+      //       >
+      //         <img
+      //           src={logo}
+      //           alt="Logo"
+      //           style={{
+      //             height: "32px",
+      //             width: "auto",
+      //             objectFit: "contain",
+      //           }}
+      //         />
+      //         <Text strong style={{ margin: 0 }}>
+      //           {title}
+      //         </Text>
+      //       </div>
+      //     </Space>
+      //   )}
       // Menu items con navegación
       menuItemRender={(item, _dom, props) => {
         const isActive = pathname === item.path;
@@ -197,25 +217,11 @@ const DashboardLayout: React.FC = () => {
       }}
       // Configuraciones de tokens de color
       token={{
-        header: {
-          // colorBgHeader: "",
-          // colorHeaderTitle: "",
-          // colorTextMenu: "",
-          // colorTextMenuSecondary: "",
-        },
         pageContainer: {
-          // colorBgPageContainer: "",
-          // colorBgPageContainerFixed: "",
           paddingBlockPageContainerContent: 10,
           paddingInlinePageContainerContent: 25,
         },
-        sider: {
-          // colorMenuBackground: "",
-          // colorTextMenu: "",
-          // colorTextMenuSelected: "",
-        },
       }}
-      // Configuración del menú
       menu={{
         collapsedShowGroupTitle: true,
         defaultOpenAll: false,

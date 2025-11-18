@@ -1,36 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { Spin } from "antd";
-// import { useAuth } from "../../features/auth/hooks";
 
 interface PublicRouteProps {
   children: React.ReactNode;
 }
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const { user, status, loading: loadingAuth } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { user, isInitialized, loading } = useAuth();
 
-  useEffect(() => {
-    if (
-      loadingAuth === true ||
-      status === "loading" ||
-      status === "initializing"
-    ) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [loadingAuth, status]);
-
-  
-  if (loading && user === null) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  // Si está cargando o validando, mostrar loading
-  if (loading) {
+  // Mostrar loading solo durante la inicialización
+  if (!isInitialized || loading) {
     return (
       <div
         style={{
@@ -40,15 +21,17 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
           height: "100vh",
         }}
       >
-        <Spin size="large" spinning={loading} />
+        <Spin size="large" />
       </div>
     );
   }
 
-  // Solo redirigir si está definitivamente autenticado
+  // Si está autenticado, redirigir a la aplicación
   if (user?.uid) {
     return <Navigate to="/app" replace />;
   }
+
+  // Si no está autenticado, mostrar el contenido público (login, etc.)
   return <>{children}</>;
 };
 
