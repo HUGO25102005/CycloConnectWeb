@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "../layouts/Dashboadlayout";
 import WelcomePage from "../../pages/app/WelcomePage";
 import DashboardPage from "../../pages/app/DashboardPage";
+import StationsDashboard from "../../pages/app/admin/StationsDashboard";
+import UserActions from "../../pages/app/user/UserActions";
 
 const AppFeature = () => {
   return (
@@ -11,6 +13,10 @@ const AppFeature = () => {
 
         {/* Panel principal */}
         <Route path="/panel" element={<DashboardPage />} />
+        {/* Panel principal */}
+        <Route path="/admin/dashboard" element={<StationsDashboard />} />
+        {/* Panel principal */}
+        <Route path="/user/actions" element={<UserActions />} />
 
         {/* Gestión de empresa */}
         {/* <Route path="/company" element={<InfoPage />} />

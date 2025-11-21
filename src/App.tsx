@@ -18,8 +18,8 @@ import { AppFeature, AuthFeature } from "./components/features";
 import { PublicRoute, PrivateRoute, NotFoundRoute } from "./components/routes";
 
 /* Importa las páginas nuevas que creaste */
-import StationsDashboard from "./pages/StationsDashboard";
-import UserActions from "./pages/UserActions";
+import StationsDashboard from "./pages/app/admin/StationsDashboard";
+import UserActions from "./pages/app/user/UserActions";
 
 const App: React.FC = () => {
   return (
