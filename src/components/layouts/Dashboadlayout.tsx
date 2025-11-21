@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { ChevronsRight, Space } from "lucide-react";
+import { ChevronsRight } from "lucide-react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getDefaultDashboardRoutes } from "./RoutesDashboard";
 import { ProLayout, type ProSettings } from "@ant-design/pro-components";
-import { Tooltip, Typography } from "antd";
+import { Tooltip } from "antd";
 import logo from "../../assets/logo.png";
 import AvatarButtons from "./AvatarButtons";
 
@@ -24,7 +24,7 @@ const findRouteIcon = (path: string, routes: any[]): React.ReactNode => {
 const DashboardLayout: React.FC = () => {
   //   const dispatch = useDispatch();
   //   const mode = useSelector((state: RootState) => state.theme.mode);
-  const { Text } = Typography;
+//   const { Text } = Typography;
 
   // Settings con sincronización del theme
   const [settings] = useState<Partial<ProSettings>>({
