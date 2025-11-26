@@ -1,7 +1,17 @@
 import axios from "axios";
+import type {
+    Lock,
+    Command,
+    Event,
+    Telemetry,
+    Log,
+    ApiResponse,
+    CommandResponse,
+    PaginatedResponse
+} from "../types/api";
 
-// Base API URL - update this with your actual API base URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+// Base API URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3080/api";
 
 // Create axios instance
 const api = axios.create({
@@ -11,124 +21,98 @@ const api = axios.create({
     },
 });
 
-// ==================== TYPES ====================
-
-export interface Lock {
-    lockId: string;
-    last_state?: string;
-    last_battery?: number;
-    last_rssi?: number;
-    position?: number;
-}
-
-export interface CommandStatus {
-    req_id: string;
-    status: string;
-    error_msg?: string;
-    ts_requested?: string;
-    ts_resolved?: string;
-}
-
-export interface TelemetryData {
-    stationId: string;
-    controllerId: string;
-    lockId: string;
-    count: number;
-    data: any[];
-}
-
-export interface LogData {
-    stationId: string;
-    controllerId: string;
-    lockId: string;
-    count: number;
-    data: any[];
-}
-
-export interface CommandRequest {
-    stationId: string;
-    controllerId: string;
-    lockId: string;
-    cmd: string;
-    timeoutMs?: number;
-}
-
 // ==================== LOCKS SERVICES ====================
 
 export const locksService = {
     /**
      * Get all locks
+     * GET /api/locks
      */
-    getAll: async () => {
+    getAll: async (): Promise<ApiResponse<Lock[]>> => {
         const response = await api.get("/locks");
         return response.data;
     },
 
     /**
      * Get lock by ID
+     * GET /api/locks/:lockId
      */
-    getById: async (lockId: string) => {
+    getById: async (lockId: string): Promise<ApiResponse<Lock>> => {
         const response = await api.get(`/locks/${lockId}`);
         return response.data;
     },
 
     /**
      * Lock a specific lock
+     * POST /api/locks/:lockId/lock
      */
-    lock: async (lockId: string) => {
-        const response = await api.post(`/locks/${lockId}/lock`);
+    lock: async (
+        lockId: string,
+        params: { stationId: string; controllerId: string; timeoutMs?: number }
+    ): Promise<ApiResponse<CommandResponse>> => {
+        const response = await api.post(`/locks/${lockId}/lock`, params);
         return response.data;
     },
 
     /**
      * Unlock a specific lock
+     * POST /api/locks/:lockId/unlock
      */
-    unlock: async (lockId: string) => {
-        const response = await api.post(`/locks/${lockId}/unlock`);
+    unlock: async (
+        lockId: string,
+        params: { stationId: string; controllerId: string; timeoutMs?: number }
+    ): Promise<ApiResponse<CommandResponse>> => {
+        const response = await api.post(`/locks/${lockId}/unlock`, params);
         return response.data;
     },
 
     /**
-     * Get command status for a lock
+     * Get command status
+     * GET /api/locks/:lockId/status/:reqId
      */
-    getCommandStatus: async (lockId: string, reqId: string): Promise<CommandStatus> => {
+    getCommandStatus: async (lockId: string, reqId: string): Promise<ApiResponse<Command>> => {
         const response = await api.get(`/locks/${lockId}/status/${reqId}`);
         return response.data;
     },
 
     /**
      * Get events for a specific lock
+     * GET /api/locks/:lockId/events
      */
-    getEvents: async (lockId: string) => {
-        const response = await api.get(`/locks/${lockId}/events`);
+    getEvents: async (lockId: string, limit: number = 50): Promise<ApiResponse<Event[]>> => {
+        const response = await api.get(`/locks/${lockId}/events`, {
+            params: { limit }
+        });
         return response.data;
     },
 };
 
-// ==================== COMMANDS SERVICES ====================
+// ==================== COMMANDS SERVICES (MODERN) ====================
 
 export const commandsService = {
     /**
-     * Publish a command to a lock
+     * Publish a command
+     * POST /api/commands/:lockId
      */
-    publish: async (lockId: string, commandData: any) => {
-        const response = await api.post(`/commands/${lockId}`, commandData);
+    publish: async (
+        lockId: string,
+        data: {
+            stationId: string;
+            controllerId: string;
+            action: "open" | "close";
+            requestedBy?: string
+        }
+    ) => {
+        const response = await api.post(`/commands/${lockId}`, data);
         return response.data;
     },
 
     /**
-     * Get command status by command ID
+     * Get command status (Modern)
+     * GET /api/commands/status/:commandId
      */
-    getStatus: async (commandId: string): Promise<CommandStatus> => {
+    getStatus: async (commandId: string) => {
         const response = await api.get(`/commands/status/${commandId}`);
-        return response.data;
-    },
-
-    /**
-     * Get command details by request ID (legacy)
-     */
-    getById: async (reqId: string): Promise<CommandStatus> => {
-        const response = await api.get(`/commands/${reqId}`);
         return response.data;
     },
 };
@@ -137,20 +121,22 @@ export const commandsService = {
 
 export const telemetryService = {
     /**
-     * Get all telemetry data for a specific lock
+     * Get telemetry data
+     * GET /api/telemetry
      */
     getAll: async (params: {
         stationId: string;
         controllerId: string;
         lockId: string;
         limit?: number;
-    }): Promise<TelemetryData> => {
+    }): Promise<PaginatedResponse<Telemetry>> => {
         const response = await api.get("/telemetry", { params });
         return response.data;
     },
 
     /**
      * Get specific telemetry by ID
+     * GET /api/telemetry/:telemetryId
      */
     getById: async (
         telemetryId: string,
@@ -159,7 +145,7 @@ export const telemetryService = {
             controllerId: string;
             lockId: string;
         }
-    ) => {
+    ): Promise<Telemetry> => {
         const response = await api.get(`/telemetry/${telemetryId}`, { params });
         return response.data;
     },
@@ -169,20 +155,22 @@ export const telemetryService = {
 
 export const logsService = {
     /**
-     * Get all logs for a specific lock
+     * Get logs
+     * GET /api/logs
      */
     getAll: async (params: {
         stationId: string;
         controllerId: string;
         lockId: string;
         limit?: number;
-    }): Promise<LogData> => {
+    }): Promise<PaginatedResponse<Log>> => {
         const response = await api.get("/logs", { params });
         return response.data;
     },
 
     /**
      * Get specific log by ID
+     * GET /api/logs/:logId
      */
     getById: async (
         logId: string,
@@ -191,39 +179,8 @@ export const logsService = {
             controllerId: string;
             lockId: string;
         }
-    ) => {
+    ): Promise<Log> => {
         const response = await api.get(`/logs/${logId}`, { params });
-        return response.data;
-    },
-};
-
-// ==================== LEGACY/CONTROLLERS SERVICES ====================
-
-export const controllersService = {
-    /**
-     * Get all locks for a specific controller
-     */
-    getLocks: async (controllerId: string, stationId: string): Promise<Lock[]> => {
-        const response = await api.get(`/controllers/${controllerId}/locks`, {
-            params: { stationId },
-        });
-        return response.data;
-    },
-
-    /**
-     * Send command to a specific lock via station/controller/lock path
-     */
-    sendCommand: async (
-        stationId: string,
-        controllerId: string,
-        lockId: string,
-        cmd: string,
-        timeoutMs: number = 5000
-    ) => {
-        const response = await api.post(
-            `/stations/${stationId}/controllers/${controllerId}/locks/${lockId}/${cmd}`,
-            { timeoutMs }
-        );
         return response.data;
     },
 };
@@ -233,6 +190,7 @@ export const controllersService = {
 export const metricsService = {
     /**
      * Get Prometheus metrics
+     * GET /api/metrics
      */
     getMetrics: async () => {
         const response = await api.get("/metrics");
@@ -242,17 +200,12 @@ export const metricsService = {
 
 // ==================== COMBINED SERVICE ====================
 
-/**
- * Main API service object that exports all services
- */
 export const apiService = {
     locks: locksService,
     commands: commandsService,
     telemetry: telemetryService,
     logs: logsService,
-    controllers: controllersService,
     metrics: metricsService,
 };
 
-// Export default axios instance for custom requests
 export default api;
