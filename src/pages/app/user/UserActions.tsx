@@ -1,7 +1,8 @@
-import React from 'react';
-import { Table, Button, Space, Tag } from 'antd';
+import React from "react";
+import { Table, Button, Space, Tag, Typography } from "antd";
 
 const { Column } = Table;
+const { Title, Paragraph } = Typography;
 
 interface ActionType {
   key: React.Key;
@@ -12,29 +13,38 @@ interface ActionType {
 
 const actionsData: ActionType[] = [
   {
-    key: '1',
-    action: 'Reinicio enviado',
-    station: 'Estación A',
-    timestamp: '2025-11-21 07:15',
+    key: "1",
+    action: "Reinicio enviado",
+    station: "Estación A",
+    timestamp: "2025-11-21 07:15",
   },
   {
-    key: '2',
-    action: 'Tarea asignada',
-    station: 'Estación B',
-    timestamp: '2025-11-20 19:02',
+    key: "2",
+    action: "Tarea asignada",
+    station: "Estación B",
+    timestamp: "2025-11-20 19:02",
   },
 ];
 
 export default function UserActions(): JSX.Element {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Acciones de usuario</h1>
-      <p>Controles y acciones que el usuario puede ejecutar sobre las estaciones.</p>
+    <Space
+      direction="vertical"
+      size="large"
+      style={{ width: "100%", padding: 20 }}
+    >
+      <div>
+        <Title level={2}>Acciones de usuario</Title>
+        <Paragraph type="secondary">
+          Controles y acciones que el usuario puede ejecutar sobre las
+          estaciones.
+        </Paragraph>
+      </div>
 
-      <section style={{ marginTop: 24 }}>
-        <h3>Acciones recientes</h3>
+      <div>
+        <Title level={3}>Acciones recientes</Title>
 
-        <Table<ActionType> dataSource={actionsData} pagination={false} style={{ marginTop: 12 }}>
+        <Table<ActionType> dataSource={actionsData} pagination={false}>
           <Column title="Acción" dataIndex="action" key="action" />
 
           <Column
@@ -58,7 +68,7 @@ export default function UserActions(): JSX.Element {
             )}
           />
         </Table>
-      </section>
-    </div>
+      </div>
+    </Space>
   );
 }

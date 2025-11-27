@@ -17,6 +17,7 @@ const AppFeature = () => {
         <Route path="/admin/dashboard" element={<StationsDashboard />} />
         {/* Panel principal */}
         <Route path="/user/actions" element={<UserActions />} />
+        <Route path="/user/control" element={<UserActions />} />
 
         {/* Gestión de empresa */}
         {/* <Route path="/company" element={<InfoPage />} />

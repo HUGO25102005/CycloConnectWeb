@@ -11,7 +11,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { App as AntdApp } from "antd";
+import { App as AntdApp, ConfigProvider } from "antd";
+import themeConfig from "./theme/themeConfig";
 
 /* Importa las features y guards existentes (traídas desde isa-branch) */
 import { AppFeature, AuthFeature } from "./components/features";
@@ -23,57 +24,59 @@ import UserActions from "./pages/app/user/UserActions";
 
 const App: React.FC = () => {
   return (
-    <AntdApp>
-      {/* Si usan un AuthProvider global, actívalo aquí */}
-      <Router>
-        <Routes>
-          {/* Ruta raíz redirige a la autenticación */}
-          <Route path="/" element={<Navigate to="/auth" replace />} />
+    <ConfigProvider theme={themeConfig}>
+      <AntdApp>
+        {/* Si usan un AuthProvider global, actívalo aquí */}
+        <Router>
+          <Routes>
+            {/* Ruta raíz redirige a la autenticación */}
+            <Route path="/" element={<Navigate to="/auth" replace />} />
 
-          {/* Rutas de autenticación (públicas) */}
-          <Route
-            path="/auth/*"
-            element={
-              <PublicRoute>
-                <AuthFeature />
-              </PublicRoute>
-            }
-          />
+            {/* Rutas de autenticación (públicas) */}
+            <Route
+              path="/auth/*"
+              element={
+                <PublicRoute>
+                  <AuthFeature />
+                </PublicRoute>
+              }
+            />
 
-          {/* Rutas específicas del dashboard que añadimos y que deben ser privadas */}
-          <Route
-            path="/app/dashboard/stations"
-            element={
-              <PrivateRoute>
-                <StationsDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/app/dashboard/actions"
-            element={
-              <PrivateRoute>
-                <UserActions />
-              </PrivateRoute>
-            }
-          />
+            {/* Rutas específicas del dashboard que añadimos y que deben ser privadas */}
+            <Route
+              path="/app/dashboard/stations"
+              element={
+                <PrivateRoute>
+                  <StationsDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/app/dashboard/actions"
+              element={
+                <PrivateRoute>
+                  <UserActions />
+                </PrivateRoute>
+              }
+            />
 
-          {/* Rutas principales de la aplicación (mantén la feature general) */}
-          <Route
-            path="/app/*"
-            element={
-              <PrivateRoute>
-                <AppFeature />
-              </PrivateRoute>
-            }
-          />
+            {/* Rutas principales de la aplicación (mantén la feature general) */}
+            <Route
+              path="/app/*"
+              element={
+                <PrivateRoute>
+                  <AppFeature />
+                </PrivateRoute>
+              }
+            />
 
-          {/* Ruta 404 */}
-          <Route path="*" element={<NotFoundRoute />} />
-        </Routes>
-      </Router>
-      {/* </AuthProvider> */}
-    </AntdApp>
+            {/* Ruta 404 */}
+            <Route path="*" element={<NotFoundRoute />} />
+          </Routes>
+        </Router>
+        {/* </AuthProvider> */}
+      </AntdApp>
+    </ConfigProvider>
   );
 };
 
