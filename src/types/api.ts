@@ -3,16 +3,32 @@
  * Based on API Documentation v1.0.0
  */
 
+// ==================== LOCKS ====================
+
+/**
+ * Firestore Timestamp structure
+ */
+export interface FirestoreTimestamp {
+    _seconds: number;
+    _nanoseconds: number;
+}
+
+/**
+ * Lock data structure from API
+ */
 export interface Lock {
-    id: string;                 // Unique lock ID
-    station_id: string;         // Station ID
-    controller_id: string;      // Controller ID
-    position: string;           // Physical position (e.g., "A1")
-    last_state: "locked" | "unlocked" | "unknown"; // Last known state
-    last_battery: number;       // Battery level 0-100
-    last_rssi: number;          // Signal strength in dBm
-    last_update: number;        // Timestamp in ms
-    controller_status: "online" | "offline"; // Controller status
+    id: string;
+    station_id: string;
+    controller_id: string;
+    last_seq: number;
+    last_state: "locked" | "unlocked" | "unknown";
+    last_battery: number; // 0-100
+    last_rssi: number; // Signal strength in dBm
+    updated_at: FirestoreTimestamp;
+    // Optional fields that might not be in the API response
+    position?: string;
+    controller_status?: "online" | "offline";
+    last_update?: number; // For compatibility
 }
 
 export interface Command {

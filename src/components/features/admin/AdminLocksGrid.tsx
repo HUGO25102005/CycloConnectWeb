@@ -33,23 +33,16 @@ export const AdminLocksGrid = () => {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("📡 Fetching locks from API...");
       const response = await apiService.locks.getAll();
-      console.log("📦 API Response:", response);
-
       if (response.success && response.data) {
-        console.log("✅ Locks data received:", response.data.length, "locks");
-        console.log("🔍 Sample lock data:", response.data[0]);
         setLocks(response.data);
         setFilteredLocks(response.data);
       } else {
-        const errorMsg = response.error || "No se pudieron cargar los candados";
-        console.error("❌ API Error:", errorMsg);
-        setError(errorMsg);
+        setError(response.error || "No se pudieron cargar los candados");
       }
     } catch (err) {
-      console.error("❌ Network/Connection Error:", err);
       setError("Error al conectar con el servidor");
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +60,9 @@ export const AdminLocksGrid = () => {
       filtered = filtered.filter(
         (lock) =>
           lock.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          lock.position.toLowerCase().includes(searchTerm.toLowerCase())
+          (
+            lock.position?.toLowerCase() || `candado ${lock.id}`.toLowerCase()
+          ).includes(searchTerm.toLowerCase())
       );
     }
 

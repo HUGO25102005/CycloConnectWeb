@@ -244,7 +244,11 @@ export const UserControlPanel = () => {
               >
                 <Text type="secondary" style={{ fontSize: 12 }}>
                   Última actualización:{" "}
-                  {new Date(lock.last_update).toLocaleString("es-MX", {
+                  {new Date(
+                    typeof lock.updated_at === "number"
+                      ? lock.updated_at
+                      : lock.updated_at._seconds * 1000
+                  ).toLocaleString("es-MX", {
                     dateStyle: "short",
                     timeStyle: "short",
                   })}

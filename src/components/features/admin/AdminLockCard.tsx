@@ -10,11 +10,28 @@ interface AdminLockCardProps {
   onClick?: () => void;
 }
 
+// Helper function to convert Firestore timestamp to milliseconds
+const firestoreTimestampToMs = (
+  timestamp: { _seconds: number; _nanoseconds: number } | number
+): number => {
+  if (typeof timestamp === "number") {
+    return timestamp;
+  }
+  return timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000;
+};
+
 export const AdminLockCard = ({ lock, onClick }: AdminLockCardProps) => {
-  const isOnline = lock.controller_status === "online";
-  const lastUpdate = new Date(lock.last_update);
-  const timeSinceUpdate = Date.now() - lock.last_update;
+  // Handle controller_status - assume online if not provided
+  const isOnline = lock.controller_status !== "offline";
+
+  // Convert Firestore timestamp to Date
+  const lastUpdateMs = firestoreTimestampToMs(lock.updated_at || Date.now());
+  const lastUpdate = new Date(lastUpdateMs);
+  const timeSinceUpdate = Date.now() - lastUpdateMs;
   const isStale = timeSinceUpdate > 5 * 60 * 1000; // 5 minutes
+
+  // Generate position from ID if not provided
+  const displayPosition = lock.position || `Candado ${lock.id}`;
 
   return (
     <Card
@@ -37,7 +54,7 @@ export const AdminLockCard = ({ lock, onClick }: AdminLockCardProps) => {
         >
           <div>
             <Title level={4} style={{ margin: 0 }}>
-              {lock.position}
+              {displayPosition}
             </Title>
             <Text type="secondary" style={{ fontSize: 12 }}>
               ID: {lock.id}
