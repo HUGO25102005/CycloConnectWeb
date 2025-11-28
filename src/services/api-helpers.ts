@@ -73,9 +73,9 @@ export class CommandStatusPoller {
             }
 
             // Check for terminal states
-            if (["completed", "failed", "timeout"].includes(commandData.status)) {
+            if (["completed", "failed", "timeout", "success"].includes(commandData.status)) {
                 this.stop();
-                if (commandData.status === "completed") {
+                if (commandData.status === "completed" || commandData.status === "success") {
                     resolve(commandData);
                 } else {
                     reject(new Error(commandData.errorMsg || `Command ${commandData.status}`));

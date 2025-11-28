@@ -23,18 +23,18 @@ export function getDefaultDashboardRoutes() {
           hideInMenu: true,
           component: "./pages/app/admin/AdminLockDetail",
         },
-        {
-          path: "/app/user/actions",
-          name: "Acciones",
-          icon: <ScanBarcode size={18} />,
-          component: "./pages/app/user/UserActions",
-        },
-        {
-          path: "/app/user/control",
-          name: "Control de Acceso",
-          icon: <Lock size={18} />,
-          component: "./pages/app/user/UserControlPanel",
-        },
+        // {
+        //   path: "/app/user/actions",
+        //   name: "Acciones",
+        //   icon: <ScanBarcode size={18} />,
+        //   component: "./pages/app/user/UserActions",
+        // },
+        // {
+        //   path: "/app/user/control",
+        //   name: "Control de Acceso",
+        //   icon: <Lock size={18} />,
+        //   component: "./pages/app/user/UserControlPanel",
+        // },
       ],
     },
   };

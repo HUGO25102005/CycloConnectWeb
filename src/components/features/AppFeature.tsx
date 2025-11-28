@@ -4,6 +4,7 @@ import WelcomePage from "../../pages/app/WelcomePage";
 import DashboardPage from "../../pages/app/DashboardPage";
 import StationsDashboard from "../../pages/app/admin/StationsDashboard";
 import UserActions from "../../pages/app/user/UserActions";
+import { AdminLockDetail } from "../../pages/app/admin/AdminLockDetail";
 
 const AppFeature = () => {
   return (
@@ -15,9 +16,11 @@ const AppFeature = () => {
         <Route path="/panel" element={<DashboardPage />} />
         {/* Panel principal */}
         <Route path="/admin/dashboard" element={<StationsDashboard />} />
+        <Route path="/admin/locks/:lockId" element={<AdminLockDetail />} />
         {/* Panel principal */}
-        <Route path="/user/actions" element={<UserActions />} />
-        <Route path="/user/control" element={<UserActions />} />
+        {/* <Route path="/user/actions" element={<UserActions />} /> */}
+        {/* <Route path="/user/control" element={<UserActions />} /> */}
+
 
         {/* Gestión de empresa */}
         {/* <Route path="/company" element={<InfoPage />} />

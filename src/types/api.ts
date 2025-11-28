@@ -34,7 +34,7 @@ export interface Lock {
 export interface Command {
     reqId: string;              // Unique command ID
     cmd: "lock" | "unlock" | "reboot"; // Command type
-    status: "sent" | "pending" | "completed" | "failed" | "timeout";
+    status: "sent" | "pending" | "completed" | "failed" | "timeout" | "success";
     requestedAt: number;        // Request timestamp
     resolvedAt: number | null;  // Resolution timestamp
     errorMsg: string | null;    // Error message if failed
