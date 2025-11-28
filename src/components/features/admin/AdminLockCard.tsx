@@ -61,8 +61,8 @@ export const AdminLockCard = ({ lock, onClick }: AdminLockCardProps) => {
             </Text>
           </div>
           <Badge
-            status={isOnline ? "success" : "default"}
-            text={isOnline ? "Online" : "Offline"}
+            // status={isOnline ? "success" : "default"}
+            // text={isOnline ? "Online" : "Offline"}
           />
         </div>
 
@@ -70,10 +70,10 @@ export const AdminLockCard = ({ lock, onClick }: AdminLockCardProps) => {
         <LockStatusBadge status={lock.last_state} size="md" />
 
         {/* Health Indicators */}
-        <Space>
-          <BatteryIndicator level={lock.last_battery} showPercentage />
-          <SignalIndicator rssi={lock.last_rssi} />
-        </Space>
+        {/* <Space> */}
+          {/* <BatteryIndicator level={lock.last_battery} showPercentage /> */}
+          {/* <SignalIndicator rssi={lock.last_rssi} /> */}
+        {/* </Space> */}
 
         {/* Last Update */}
         <Space size="small">

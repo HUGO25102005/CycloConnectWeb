@@ -212,16 +212,16 @@ export const AdminLockDetail = () => {
             <Descriptions.Item label="Estado">
               <LockStatusBadge status={lock.last_state} size="lg" />
             </Descriptions.Item>
-            <Descriptions.Item label="Batería">
+            {/* <Descriptions.Item label="Batería">
               <BatteryIndicator
                 level={lock.last_battery}
                 showPercentage
                 size={24}
               />
-            </Descriptions.Item>
-            <Descriptions.Item label="Señal">
+            </Descriptions.Item> */}
+            {/* <Descriptions.Item label="Señal">
               <SignalIndicator rssi={lock.last_rssi} showValue size={24} />
-            </Descriptions.Item>
+            </Descriptions.Item> */}
           </Descriptions>
 
           {/* Action Buttons */}
@@ -268,13 +268,13 @@ export const AdminLockDetail = () => {
                     stroke="#10b981"
                     name="Batería (%)"
                   />
-                  <Line
+                  {/* <Line
                     yAxisId="right"
                     type="monotone"
                     dataKey="rssi"
                     stroke="#3b82f6"
                     name="Señal (dBm abs)"
-                  />
+                  /> */}
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -325,13 +325,13 @@ export const AdminLockDetail = () => {
                           </Text>
                         </div>
                       </div>
-                      {event.battery !== undefined && (
+                      {/* {event.battery !== undefined && (
                         <BatteryIndicator
                           level={event.battery}
                           showPercentage={false}
                           size={16}
                         />
-                      )}
+                      )} */}
                     </Space>
                   </div>
                 ),

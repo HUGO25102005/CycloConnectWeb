@@ -253,14 +253,14 @@ export const UserControlPanel = () => {
             }}
           >
             <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              <div style={{ display: "flex", justifyContent: "space-around" }}>
+              {/* <div style={{ display: "flex", justifyContent: "space-around" }}>
                 <Statistic
                   title="Batería"
                   value={lock.last_battery}
                   suffix="%"
                 />
                 <Statistic title="Señal" value={lock.last_rssi} suffix="dBm" />
-              </div>
+              </div> */}
 
               <Card
                 size="small"
