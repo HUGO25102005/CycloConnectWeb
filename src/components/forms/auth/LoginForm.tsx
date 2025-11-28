@@ -126,7 +126,7 @@ const LoginForm: React.FC = () => {
           </Form.Item>
         </Form>
 
-        <Divider>
+        {/* <Divider>
           <Text type="secondary">o</Text>
         </Divider>
 
@@ -138,7 +138,7 @@ const LoginForm: React.FC = () => {
           style={{ height: 44 }}
         >
           Continuar con Google
-        </Button>
+        </Button> */}
       </Space>
     </Card>
   );

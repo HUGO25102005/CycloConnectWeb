@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Card,
   Space,
@@ -8,13 +8,13 @@ import {
   Typography,
   Alert,
   Badge,
+  message,
 } from "antd";
 import { apiService } from "../../../services";
 import { useLockCommand } from "../../../hooks/useLockCommand";
 import type { Lock } from "../../../types/api";
-import { Wifi, WifiOff, User } from "lucide-react";
+import { Wifi, WifiOff, User, Lock as LockIcon } from "lucide-react";
 import { LockControlButton } from "../../../components/features/user";
-import { CommandFeedbackToast } from "../../../components/features/locks";
 
 const { Title, Text } = Typography;
 
@@ -22,10 +22,8 @@ export const UserControlPanel = () => {
   const [lock, setLock] = useState<Lock | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error" | "info" | "loading";
-  } | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const loadingMessageKey = useRef<(() => void) | null>(null);
 
   // For demo purposes, we'll get the first lock. In production, this should be the user's assigned lock
   const fetchUserLock = async () => {
@@ -51,35 +49,62 @@ export const UserControlPanel = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleSuccess = useCallback(() => {
+    // Destroy loading message if exists
+    if (loadingMessageKey.current) {
+      loadingMessageKey.current();
+      loadingMessageKey.current = null;
+    }
+    messageApi.success("Comando ejecutado exitosamente");
+    setTimeout(fetchUserLock, 1000); // Refresh lock state
+  }, [messageApi]);
+
+  const handleError = useCallback(
+    (error: Error) => {
+      // Destroy loading message if exists
+      if (loadingMessageKey.current) {
+        loadingMessageKey.current();
+        loadingMessageKey.current = null;
+      }
+      messageApi.error(`Error: ${error.message}`);
+    },
+    [messageApi]
+  );
+
+  const handleStatusChange = useCallback(
+    (status: string) => {
+      if (status === "pending") {
+        // Destroy previous loading message if exists
+        if (loadingMessageKey.current) {
+          loadingMessageKey.current();
+        }
+        loadingMessageKey.current = messageApi.loading(
+          "Esperando respuesta del dispositivo...",
+          0
+        );
+      }
+    },
+    [messageApi]
+  );
+
   const {
     executeLock,
     executeUnlock,
     isLoading: isCommandLoading,
   } = useLockCommand(lock?.id || "", {
-    onSuccess: () => {
-      setToast({
-        message: "✅ Comando ejecutado exitosamente",
-        type: "success",
-      });
-      setTimeout(fetchUserLock, 1000); // Refresh lock state
-    },
-    onError: (error) => {
-      setToast({ message: `❌ Error: ${error.message}`, type: "error" });
-    },
-    onStatusChange: (status) => {
-      if (status === "pending") {
-        setToast({
-          message: "⏳ Esperando respuesta del dispositivo...",
-          type: "loading",
-        });
-      }
-    },
+    onSuccess: handleSuccess,
+    onError: handleError,
+    onStatusChange: handleStatusChange,
   });
 
   const handleAction = async () => {
     if (!lock) return;
 
-    setToast({ message: "📤 Enviando comando...", type: "loading" });
+    // Destroy previous loading message if exists
+    if (loadingMessageKey.current) {
+      loadingMessageKey.current();
+    }
+    loadingMessageKey.current = messageApi.loading("Enviando comando...", 0);
 
     if (lock.last_state === "locked") {
       await executeUnlock({
@@ -106,7 +131,7 @@ export const UserControlPanel = () => {
         }}
       >
         <Space direction="vertical" align="center">
-          <div style={{ fontSize: 60 }}>🔐</div>
+          <LockIcon size={60} />
           <Spin size="large" />
           <Text type="secondary" style={{ fontSize: 18 }}>
             Cargando...
@@ -128,7 +153,6 @@ export const UserControlPanel = () => {
         }}
       >
         <Space direction="vertical" align="center" style={{ padding: 32 }}>
-          <div style={{ fontSize: 60 }}>⚠️</div>
           <Alert
             message={error || "No se pudo cargar el candado"}
             type="error"
@@ -259,14 +283,7 @@ export const UserControlPanel = () => {
         </Space>
       </div>
 
-      {/* Toast Notifications */}
-      {toast && (
-        <CommandFeedbackToast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {contextHolder}
     </div>
   );
 };
